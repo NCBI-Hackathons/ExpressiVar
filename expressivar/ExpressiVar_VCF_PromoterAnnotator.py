@@ -9,7 +9,7 @@ file_prompter = open('Promoter_Library_hg19.txt', 'r')
 chr_promoter_ranges_dict = dict()
 chr_promoter_ranges_gene_dict = dict()
 for eachpromoter in file_prompter:
-	component = eachpromoter.strip().split('\t')
+    component = eachpromoter.strip().split('\t')
 	CHROM = component[0]
 	START = component[1]
 	END = component[2]
@@ -71,5 +71,5 @@ if input_filename.endswith('vcf'):
 					match_line += 1
 					file_out.write(CHROM+'\t'+str(POS)+'\t'+ID+'\t'+REF+'\t'+ALT+'\t'+OUTPUT+'\n')
 
-print 'match_line:\t' + str(match_line)
-print 'match_promoter:\t' + str(match_promoter)
+print('match_line:\t' + str(match_line))
+print('match_promoter:\t' + str(match_promoter))
