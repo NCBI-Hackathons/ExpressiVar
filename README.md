@@ -2,7 +2,7 @@
 
 
 <p align="center">
-  <img src="project_overview.jpg">
+  <img src="ExpressiVar_schematic.png">
 </p>
 
 
