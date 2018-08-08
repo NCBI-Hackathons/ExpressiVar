@@ -36,15 +36,19 @@ The package relies on
 ## Usage
 
 There are two modes in which you can call ExpressiVar --
-
-* python expressivar.py VCF2RNAseq <path-to-vcf-file> <path-to-counts-file>
-
+```
+python ExpressiVar_VCF_to_Expression.py <path-to-vcf-file> <path-to-counts-file>
+```
 This would take a VCF file and along with the counts expression data and annotate it with the gene expression level information. 
-
-* python expessivar.py RNAseq2VCF <path-to-counts-file> <path-to-vcf-file>
-
+```
+python expessivar.py RNAseq2VCF <path-to-counts-file> <path-to-vcf-file>
+```
 This will be working with the counts expression data and annotate it with variance information from the VCF file. 
 
+Additionally, we can also annotate promotor regions. 
+```
+python ExpressiVar_VCF_PromoterAnnotator.py <path-to-vcf-file>
+```
 ### Assumptions
 
  The VCF file should be annotated using either SnPEff or VEP. 
