@@ -1,5 +1,7 @@
 # ExpressiVar
 
+[![Build Status](https://api.travis-ci.org/NCBI-Hackathons/ExpressiVar.svg?branch=masterr)](https://travis-ci.org/NCBI-Hackathons/ExpressiVar)
+
 
 <p align="center">
   <img src="ExpressiVar_schematic.png">
