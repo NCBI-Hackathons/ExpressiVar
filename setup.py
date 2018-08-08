@@ -20,9 +20,7 @@ def _list_authors(authors=AUTHORS):
         return sname
 
     for name, email in sorted(authors, key=_sort_by_surname):
-        # python2 ;_;
-        # yield f'{name} <{email}>'
-        yield '{name} <{email}>'.format(name=name, email=email)
+        yield f'{name} <{email}>'
 
 def _get_authors_str():
     return ', '.join(list(_list_authors()))
@@ -39,7 +37,7 @@ setuptools.setup(
     url='https://github.com/NCBI-Hackathons/ExpressiVar',
     packages=setuptools.find_packages(),
     classifiers=(
-        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ),
