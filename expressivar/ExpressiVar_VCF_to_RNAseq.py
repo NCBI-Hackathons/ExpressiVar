@@ -1,8 +1,12 @@
+import sys
 
-file_in_VCF = open('SAMPLE_Mutation.vcf', 'r')
-file_in_RNAseq = open('SAMPLE_RNAseq_ReadCount.txt', 'r')
+input_filename_VCF = str(sys.argv[1])
+input_filename_RNAseq = str(sys.argv[2])
 
-file_out = open('SAMPLE_Mutation_with_RNAseq.vcf', 'w')
+file_in_VCF = open(input_filename_VCF, 'r')
+file_in_RNAseq = open(input_filename_RNAseq, 'r')
+
+file_out = open(input_filename_VCF + '.RNAseq.ann', 'w')
 
 gene_expression_zeroset = set()
 gene_expression = dict()
