@@ -1,10 +1,10 @@
 import sys
 
 input_filename_VCF = str(sys.argv[1])
-input_filename_RNAseq = str(sys.argv[2])
+input_filename_Expression = str(sys.argv[2])
 
 file_in_VCF = open(input_filename_VCF, 'r')
-file_in_RNAseq = open(input_filename_RNAseq, 'r')
+file_in_Expression = open(input_filename_Expression, 'r')
 
 file_out = open(input_filename_VCF + '.expression.ann', 'w')
 
