@@ -41,7 +41,7 @@ python ExpressiVar_VCF_to_Expression.py <path-to-vcf-file> <path-to-counts-file>
 ```
 This would take a VCF file and along with the counts expression data and annotate it with the gene expression level information. 
 ```
-python expessivar.py RNAseq2VCF <path-to-counts-file> <path-to-vcf-file>
+python ExpressiVar_Expression_to_VCF.py RNAseq2VCF <path-to-counts-file> <path-to-vcf-file>
 ```
 This will be working with the counts expression data and annotate it with variance information from the VCF file. 
 
