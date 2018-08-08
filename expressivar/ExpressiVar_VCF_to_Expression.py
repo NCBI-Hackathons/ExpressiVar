@@ -6,7 +6,7 @@ input_filename_RNAseq = str(sys.argv[2])
 file_in_VCF = open(input_filename_VCF, 'r')
 file_in_RNAseq = open(input_filename_RNAseq, 'r')
 
-file_out = open(input_filename_VCF + '.RNAseq.ann', 'w')
+file_out = open(input_filename_VCF + '.expression.ann', 'w')
 
 gene_expression_zeroset = set()
 gene_expression = dict()

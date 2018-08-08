@@ -53,9 +53,9 @@ if input_filename.endswith('vcf'):
 					elif START >= promoter_START and END <= promoter_END:
 						MESSAGE = 'internal_hit'
 					elif (promoter_START <= START <= promoter_END) and END > promoter_END:
-						MESSAGE = 'right_hit'
+						MESSAGE = 'down_hit'
 					elif START < promoter_START and (promoter_START <= END <= promoter_END):
-						MESSAGE = 'left_hit'
+						MESSAGE = 'up_hit'
 
 					if MESSAGE != '':
 						promoter_RANGE = str(promoter_START) + '-' + str(promoter_END)
@@ -70,7 +70,6 @@ if input_filename.endswith('vcf'):
 						OUTPUT += eachOUTPUT + ','
 					match_line += 1
 					file_out.write(CHROM+'\t'+str(POS)+'\t'+ID+'\t'+REF+'\t'+ALT+'\t'+OUTPUT+'\n')
-
 
 print 'match_line:\t' + str(match_line)
 print 'match_promoter:\t' + str(match_promoter)
