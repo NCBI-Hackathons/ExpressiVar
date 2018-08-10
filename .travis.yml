@@ -5,9 +5,11 @@ python:
 install:
     - sudo apt-get -y update
     - sudo apt-get -y install python-matplotlib
-    - pip install codecov
+    - pip install -e .
+    - pip install -r test-requirements.txt
 script:
-    - nosetests
-after_success:
-    - codecov
+    # `py.test` because of python3.4
+    - py.test --cov expressivar --cov-report=term --cov-report=xml
+#after_success:
+#    - codecov -t 'foo'
 
