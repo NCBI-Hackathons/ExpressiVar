@@ -20,7 +20,7 @@ def _list_authors(authors=AUTHORS):
         return sname
 
     for name, email in sorted(authors, key=_sort_by_surname):
-        yield f'{name} <{email}>'
+        yield '{name} <{email}>'.format(name=name, email=email)
 
 def _get_authors_str():
     return ', '.join(list(_list_authors()))

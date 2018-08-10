@@ -8,7 +8,7 @@ def annotate_effective_promoters(infile, outfile=None,
 
     # validate filename extension
     if not infile.endswith('vcf'):
-        raise RuntimeError(f'{infile} not a vcf file.')
+        raise RuntimeError('{infile} not a vcf file.'.format(infile=infile))
 
     with open(infile, 'r') as file_in,\
         open(outfile, 'w') as file_out,\
