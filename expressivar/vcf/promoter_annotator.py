@@ -1,8 +1,10 @@
-DEFAULT_PROMOTER_DB = 'Promoter_Library_hg19.txt'
+from expressivar.db import DEFAULT_PROMOTER_DB
 
 
-def annotate_effective_promoters(infile, outfile=None,
-                                 promoterdb=DEFAULT_PROMOTER_DB):
+def annotate_effective_promoters(infile, outfile=None, promoterdb=None):
+    if promoterdb is None:
+        promoterdb = DEFAULT_PROMOTER_DB
+
     if outfile is None:
         outfile = infile + '.promoter.ann'
 
@@ -10,9 +12,9 @@ def annotate_effective_promoters(infile, outfile=None,
     if not infile.endswith('vcf'):
         raise RuntimeError('{infile} not a vcf file.'.format(infile=infile))
 
-    with open(infile, 'r') as file_in,\
-        open(outfile, 'w') as file_out,\
-            open(promoterdb) as file_prompter:
+    with open(infile, 'r') as file_in, open(outfile, 'w') as file_out, open(
+        promoterdb
+    ) as file_prompter:
 
         chr_promoter_ranges_dict = dict()
         chr_promoter_ranges_gene_dict = dict()
@@ -56,21 +58,25 @@ def annotate_effective_promoters(infile, outfile=None,
                             promoter_END = int(each_RANGE_INFO[1])
                             MESSAGE = ''
                             if START <= promoter_START and END >= promoter_END:
-                                    MESSAGE = 'complete_hit'
-                            elif START >= promoter_START and\
-                                    END <= promoter_END:
-                                    MESSAGE = 'internal_hit'
-                            elif (promoter_START <= START <= promoter_END) and\
-                                    END > promoter_END:
-                                    MESSAGE = 'down_hit'
-                            elif START < promoter_START and \
-                                    (promoter_START <= END <= promoter_END):
-                                    MESSAGE = 'up_hit'
+                                MESSAGE = 'complete_hit'
+                            elif START >= promoter_START and END <= promoter_END:
+                                MESSAGE = 'internal_hit'
+                            elif (
+                                promoter_START <= START <= promoter_END
+                            ) and END > promoter_END:
+                                MESSAGE = 'down_hit'
+                            elif START < promoter_START and (
+                                promoter_START <= END <= promoter_END
+                            ):
+                                MESSAGE = 'up_hit'
 
                             if MESSAGE != '':
-                                promoter_RANGE = str(promoter_START) + \
-                                    '-' + str(promoter_END)
-                                promoter_GENE = chr_promoter_ranges_gene_dict[CHROM][promoter_RANGE]
+                                promoter_RANGE = (
+                                    str(promoter_START) + '-' + str(promoter_END)
+                                )
+                                promoter_GENE = chr_promoter_ranges_gene_dict[CHROM][
+                                    promoter_RANGE
+                                ]
                                 promoter_OUTPUT = promoter_GENE + ':' + MESSAGE
                                 OUTPUT_set.add(promoter_OUTPUT)
                                 match_promoter += 1
@@ -78,7 +84,7 @@ def annotate_effective_promoters(infile, outfile=None,
                         if OUTPUT_set:
                             OUTPUT = ''
                             for eachOUTPUT in OUTPUT_set:
-                                    OUTPUT += eachOUTPUT + ','
+                                OUTPUT += eachOUTPUT + ','
                             match_line += 1
                             fields = [CHROM, str(POS), ID, REF, ALT, OUTPUT]
                             out_line = '\t'.join(fields) + '\n'
@@ -87,9 +93,18 @@ def annotate_effective_promoters(infile, outfile=None,
 
 if __name__ == '__main__':
     import sys
-    try:
-        input_filename = str(sys.argv[1])
-    except IndexError:
-        sys.exit('Supply input-file, output-file')
 
-    annotate_effective_promoters(input_filename)
+    try:
+        input_filename = sys.argv[1]
+    except IndexError:
+        sys.exit('Supply input-file [output-file] [promoter_database]')
+
+    mapping = {2: 'outfile', 3: 'promoterdb'}
+    kwargs = {}
+    for i, v in mapping.items():
+        try:
+            kwargs[v] = sys.argv[i]
+        except IndexError:
+            kwargs[v] = None
+
+    annotate_effective_promoters(input_filename, **kwargs)
