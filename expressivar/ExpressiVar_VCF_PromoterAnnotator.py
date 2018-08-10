@@ -10,7 +10,7 @@ def annotate_effective_promoters(infile, outfile=None,
     if not infile.endswith('vcf'):
         raise RuntimeError(f'{infile} not a vcf file.')
 
-    with open(input_filename, 'r') as file_in,\
+    with open(infile, 'r') as file_in,\
         open(outfile, 'w') as file_out,\
             open(promoterdb) as file_prompter:
 
