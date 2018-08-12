@@ -25,6 +25,7 @@ def _list_authors(authors=AUTHORS):
 def _get_authors_str():
     return ', '.join(list(_list_authors()))
 
+# TODO(zeroslack): use setuptools_scm
 setuptools.setup(
     name='expressivar',
     version='0.0.2',
@@ -37,6 +38,7 @@ setuptools.setup(
     url='https://github.com/NCBI-Hackathons/ExpressiVar',
     packages=setuptools.find_packages(),
     keywords='SNPs RNA-Seq VCF',
+    include_package_data=True,
     classifiers=(
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Science/Research',
