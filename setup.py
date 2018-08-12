@@ -27,7 +27,7 @@ def _get_authors_str():
 
 setuptools.setup(
     name='expressivar',
-    version='0.0.1',
+    version='0.0.2',
     author=_get_authors_str(),
     author_email='https://ncbi-hackathons.github.io/',
     description='Package to determine mutations from expressed genes',
@@ -36,9 +36,18 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/NCBI-Hackathons/ExpressiVar',
     packages=setuptools.find_packages(),
+    keywords='SNPs RNA-Seq VCF',
     classifiers=(
-        'Programming Language :: Python :: 3',
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
     ),
 )
