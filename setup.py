@@ -38,6 +38,7 @@ setuptools.setup(
     url='https://github.com/NCBI-Hackathons/ExpressiVar',
     packages=setuptools.find_packages(),
     keywords='SNPs RNA-Seq VCF',
+    install_requires=['wrapt'],
     include_package_data=True,
     classifiers=(
         'Development Status :: 2 - Pre-Alpha',
