@@ -2,8 +2,10 @@ import inspect
 import wrapt
 import contextlib
 
+
 def is_file_like(f):
     return callable(getattr(f, 'read', None))
+
 
 def file_or_path(**argmap):
     """Checks whether named arguments to decorated functions are file-likeish
@@ -23,7 +25,7 @@ def file_or_path(**argmap):
             if _val is None:
                 continue
             if not is_file_like(_val):
-            # throw here??
+                # throw here??
                 managed.append((_name, _val))
 
         with contextlib.ExitStack() as stack:
@@ -34,11 +36,25 @@ def file_or_path(**argmap):
 
     return inner
 
+
+@contextlib.contextmanager
+def rewind(fh):
+    """Simply rewinds an open file."""
+    try:
+        fh.flush()
+        fh.seek(0)
+        yield fh
+    finally:
+        pass
+
+
 if __name__ == '__main__':
+
     @file_or_path(inputfile='r', outputfile='w')
     def foo(inputfile, outputfile):
         print('in foo()')
 
     import tempfile
+
     with tempfile.TemporaryFile() as ofile:
         foo('foobar', 'foo')
