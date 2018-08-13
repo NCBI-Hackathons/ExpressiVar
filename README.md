@@ -19,7 +19,7 @@ cd ExpressiVar && pip install -e
 
 
 <p align="center">
-  <img src="ExpressiVar_schematic.png">
+  <img src="docs/images/ExpressiVar_schematic.png">
 </p>
 
 
