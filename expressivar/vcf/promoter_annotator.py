@@ -20,8 +20,8 @@ def annotate_effective_promoters(infile, outfile=None, promoterdb=None):
 def _annotate_effective_promoters(infile, outfile, promoterdb):
     chr_promoter_ranges_dict = dict()
     chr_promoter_ranges_gene_dict = dict()
-    for eachpromoter in promoterdb:
-        component = eachpromoter.strip().split('\t')
+    for promoter in promoterdb:
+        component = promoter.strip().split('\t')
         CHROM = component[0]
         START = component[1]
         END = component[2]
@@ -29,19 +29,19 @@ def _annotate_effective_promoters(infile, outfile, promoterdb):
         GENE = component[4]
 
         if CHROM not in chr_promoter_ranges_dict:
-            chr_promoter_ranges_dict[CHROM] = set()
-            chr_promoter_ranges_dict[CHROM].add(RANGE)
+            chr_promoter_ranges_dict[CHROM] = []
+            chr_promoter_ranges_dict[CHROM].append(RANGE)
             chr_promoter_ranges_gene_dict[CHROM] = dict()
             chr_promoter_ranges_gene_dict[CHROM][RANGE] = GENE
         else:
-            chr_promoter_ranges_dict[CHROM].add(RANGE)
+            chr_promoter_ranges_dict[CHROM].append(RANGE)
             chr_promoter_ranges_gene_dict[CHROM][RANGE] = GENE
 
     match_line = 0
     match_promoter = 0
-    for eachline in infile:
-        if not eachline.startswith('#'):
-            component = eachline.strip().split('\t')
+    for line in infile:
+        if not line.startswith('#'):
+            component = line.strip().split('\t')
             CHROM = component[0]
             POS = int(component[1])
             ID = component[2]
@@ -52,12 +52,12 @@ def _annotate_effective_promoters(infile, outfile, promoterdb):
             if not CHROM.startswith('chr'):
                 CHROM = 'chr' + CHROM
 
-                OUTPUT_set = set()
-                if CHROM in chr_promoter_ranges_dict.keys():
+                OUTPUT_set = []
+                if CHROM in chr_promoter_ranges_dict:
                     for each_RANGE in chr_promoter_ranges_dict[CHROM]:
-                        each_RANGE_INFO = each_RANGE.split('-')
-                        promoter_START = int(each_RANGE_INFO[0])
-                        promoter_END = int(each_RANGE_INFO[1])
+                        promoter_START, promoter_END = map(
+                            int, each_RANGE.split('-')
+                        )
                         MESSAGE = ''
                         if START <= promoter_START and END >= promoter_END:
                             MESSAGE = 'complete_hit'
@@ -76,17 +76,15 @@ def _annotate_effective_promoters(infile, outfile, promoterdb):
                             promoter_RANGE = (
                                 str(promoter_START) + '-' + str(promoter_END)
                             )
-                            promoter_GENE = chr_promoter_ranges_gene_dict[CHROM][
-                                promoter_RANGE
-                            ]
+                            promoter_GENE = chr_promoter_ranges_gene_dict[
+                                CHROM
+                            ][promoter_RANGE]
                             promoter_OUTPUT = promoter_GENE + ':' + MESSAGE
-                            OUTPUT_set.add(promoter_OUTPUT)
+                            OUTPUT_set.append(promoter_OUTPUT)
                             match_promoter += 1
 
                     if OUTPUT_set:
-                        OUTPUT = ''
-                        for eachOUTPUT in OUTPUT_set:
-                            OUTPUT += eachOUTPUT + ','
+                        OUTPUT = ','.join(OUTPUT_set)
                         match_line += 1
                         fields = [CHROM, str(POS), ID, REF, ALT, OUTPUT]
                         out_line = '\t'.join(fields) + '\n'
