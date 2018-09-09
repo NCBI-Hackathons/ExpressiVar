@@ -1,8 +1,19 @@
+from enum import Enum
 import csv
 
 from expressivar.db import DEFAULT_PROMOTER_DB
 from expressivar.dec import file_or_path
 import vcf
+
+
+class MatchState(Enum):
+    UP = 'up_hit'
+    DOWN = 'down_hit'
+    COMPLETE = 'complete_hit'
+    INTERNAL = 'internal_hit'
+
+    def __format__(self, format_spec):
+        return self.value.__format__(format_spec)
 
 
 def annotate_effective_promoters(infile, outfile=None, promoterdb=None):
@@ -15,27 +26,36 @@ def annotate_effective_promoters(infile, outfile=None, promoterdb=None):
     return _annotate_effective_promoters(infile, outfile, promoterdb)
 
 
-# TODO(zeroslack): ensure infile.newline == ''
-@file_or_path(infile='r', outfile='w', promoterdb='r')
+@file_or_path(
+    infile=dict(mode='r', newline=''),
+    outfile=dict(mode='w'),
+    promoterdb=dict(mode='r'),
+    strictparams=True,
+)
 def _annotate_effective_promoters(infile, outfile, promoterdb):
     csv_dialect = 'excel-tab'
     preader = csv.reader(promoterdb, dialect=csv_dialect)
     output = csv.writer(outfile, dialect=csv_dialect)
     chr_promoter_ranges_dict = dict()
     chr_promoter_ranges_gene_dict = dict()
+
+    def init_caches(key):
+        chr_promoter_ranges_dict[key] = []
+        chr_promoter_ranges_gene_dict[key] = dict()
+
+    def add_record(chr_, range_, gene):
+        chr_promoter_ranges_dict[chr_].append(range_)
+        chr_promoter_ranges_gene_dict[chr_][range_] = gene
+
     for promoter in preader:
         # TODO(zeroslack): what is format of this file??
-        CHROM, START, END, STRAND, GENE  = promoter
-        RANGE = (int(START), int(END))
+        chrom, start, end, strand, gene = promoter
+        range_ = (int(start), int(end))
 
-        if CHROM not in chr_promoter_ranges_dict:
-            chr_promoter_ranges_dict[CHROM] = []
-            chr_promoter_ranges_dict[CHROM].append(RANGE)
-            chr_promoter_ranges_gene_dict[CHROM] = dict()
-            chr_promoter_ranges_gene_dict[CHROM][RANGE] = GENE
-        else:
-            chr_promoter_ranges_dict[CHROM].append(RANGE)
-            chr_promoter_ranges_gene_dict[CHROM][RANGE] = GENE
+        if chrom not in chr_promoter_ranges_dict:
+            init_caches(chrom)
+
+        add_record(chrom, range_, gene)
 
     vreader = vcf.Reader(infile)
 
@@ -43,45 +63,43 @@ def _annotate_effective_promoters(infile, outfile, promoterdb):
         return str(x) if x else ''
 
     for record in vreader:
-        CHROM = record.CHROM
-        POS = record.POS
-        ID = record.ID or '.'
-        REF = record.REF
-        ALT = ''.join(map(_alt_to_str, record.ALT))
-        START = POS
-        END = POS + len(REF) - 1
+        chrom = record.CHROM
+        pos = record.POS
+        id_ = record.ID or '.'
+        ref = record.REF
+        alt = ''.join(map(_alt_to_str, record.ALT))
+        start = pos
+        end = pos + len(ref) - 1
         # FIXME
-        if not CHROM.startswith('chr'):
-            CHROM = 'chr' + CHROM
+        if not chrom.startswith('chr'):
+            chrom = 'chr' + chrom
 
-            OUTPUT_set = []
-            if CHROM in chr_promoter_ranges_dict:
-                for pstart, pend in chr_promoter_ranges_dict[CHROM]:
-                    MESSAGE = ''
-                    if START <= pstart and END >= pend:
-                        MESSAGE = 'complete_hit'
-                    elif START >= pstart and END <= pend:
-                        MESSAGE = 'internal_hit'
-                    elif (
-                        pstart <= START <= pend
-                    ) and END > pend:
-                        MESSAGE = 'down_hit'
-                    elif START < pstart and (
-                        pstart <= END <= pend
-                    ):
-                        MESSAGE = 'up_hit'
+            matches = []
+            if chrom in chr_promoter_ranges_dict:
+                for pstart, pend in chr_promoter_ranges_dict[chrom]:
+                    match_type = None
+                    if start <= pstart and end >= pend:
+                        match_type = MatchState.COMPLETE
+                    elif start >= pstart and end <= pend:
+                        match_type = MatchState.INTERNAL
+                    elif (pstart <= start <= pend) and end > pend:
+                        match_type = MatchState.DOWN
+                    elif start < pstart and (pstart <= end <= pend):
+                        match_type = MatchState.UP
 
-                    if MESSAGE != '':
+                    if match_type is not None:
                         range_ = (pstart, pend)
-                        promoter_GENE = chr_promoter_ranges_gene_dict[
-                            CHROM
-                        ][range_]
-                        promoter_OUTPUT = promoter_GENE + ':' + MESSAGE
-                        OUTPUT_set.append(promoter_OUTPUT)
+                        promoter_gene = chr_promoter_ranges_gene_dict[chrom][
+                            range_
+                        ]
+                        promoter_output = '{}:{}'.format(
+                            promoter_gene, match_type
+                        )
+                        matches.append(promoter_output)
 
-                if OUTPUT_set:
-                    OUTPUT = ','.join(OUTPUT_set)
-                    fields = [CHROM, str(POS), ID, REF, ALT, OUTPUT]
+                if matches:
+                    match_list = ','.join(matches)
+                    fields = [chrom, str(pos), id_, ref, alt, match_list]
                     output.writerow(fields)
 
 

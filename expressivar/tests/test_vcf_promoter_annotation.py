@@ -16,9 +16,7 @@ def tests_basedir(scope='session'):
 
 @pytest.fixture
 def input_file(tests_basedir):
-    return os.path.join(
-        tests_basedir, 'data', 'annotated_promoter_input.vcf'
-    )
+    return os.path.join(tests_basedir, 'data', 'annotated_promoter_input.vcf')
 
 
 @pytest.fixture
