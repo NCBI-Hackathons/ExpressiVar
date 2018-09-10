@@ -28,9 +28,11 @@ def _get_authors_str():
 # TODO(zeroslack): use setuptools_scm
 setuptools.setup(
     name='expressivar',
-    version='0.0.2',
+    version='0.0.3',
     author=_get_authors_str(),
     author_email='https://ncbi-hackathons.github.io/',
+    maintainer_email='kundai.andrew.midzi@gmail.com',
+    maintainer='Kundai Andrew Midzi',
     description='Package to determine mutations from expressed genes',
     license='MIT',
     long_description=long_description,
@@ -48,7 +50,7 @@ setuptools.setup(
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
