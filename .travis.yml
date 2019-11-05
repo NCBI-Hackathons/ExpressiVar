@@ -1,13 +1,14 @@
 language: python
 python:
-    - 3.4
+    - 3.5
     - 3.6
 install:
     - sudo apt-get -y update
     - sudo apt-get -y install python-matplotlib
-    - pip install codecov
+    - pip install -e .
+    - pip install -r test-requirements.txt
 script:
-    - nosetests
-after_success:
-    - codecov
+    - pytest --cov expressivar --cov-report=term --cov-report=xml
+#after_success:
+#    - codecov -t 'foo'
 
